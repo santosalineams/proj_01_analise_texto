@@ -1,0 +1,74 @@
+---
+title: "Projeto 01"
+output:
+  html_notebook: default
+---
+
+Este *working paper* é uma análise das principais obras do pensamento político filosófico dos séculos XVI e XVII, **Nicolau Maquiavel**, **Thomas Hobbes**, **John Locke** e **Jean-Jacques Rousseau**, pensadores clássicos que originaram o pensamento político ocidental.
+
+Para tal, foram utilizadas 04 das obras mais representativas destes autores.
+
+```{r}
+library(gutenbergr)
+library(stringr)
+```
+
+A fonte dos dados utilizados na análise, no caso, das obras em si e dos corpus das obras, foi o repositório do [Projeto Gutenberg](http://www.gutenberg.org/), disponibilizado pelo pacote [gutenbergr](https://cran.r-project.org/web/packages/gutenbergr/).
+
+O processo de localização dos autores e das obras que foram utilizadas, pode ser resumidos em dois passos, respectivamente:
+
+**Primeiro Passo**
+
+Para a localização geral dos autores e das obras dentro do repositório do Projeto Gutenberg foram feitas buscas nucleadas no sobrenome dos autores, a saber:
+
+- **Machiavelli**, Niccolò; 
+
+- **Hobbes**, Thomas; 
+
+- **Locke**, John e 
+
+- **Rousseau**, Jean-Jacques.
+
+Uma adaptação foi necessária para o caso do nome de Nicolau Maquiavel, que em termos gerais é publicado em sua composição original italiana quando em edições/impressões em língua inglesa, Niccolò Machiavelli. Destas buscas iniciais foram elaborados *dataframes* com os resultados gerais da busca para cada autor, conforme relacionado no trecho de código abaixo.
+
+```{r}
+machiavelli <- gutenberg_works(str_detect(author, "Machiavelli"))
+hobbes <- gutenberg_works(str_detect(author, "Hobbes"))
+locke <- gutenberg_works(str_detect(author, "Locke"))
+rousseau <- gutenberg_works(str_detect(author, "Rousseau"))
+```
+
+**Segundo Passo**
+
+De posse dos bancos de dados com os resultados da busca global pelo sobrenome dos autores, foram manualmente selecionadas as obras centrais, conforme nos diz a literatura, para a composição do quadro de resumo do objeto,
+
+**Quadro 01 - Resumo do Objeto: Relação de Títulos e Autores**
+
+| gutenberg_title_id 	| title                                	| author_lastname 	| author_firstname 	| gutenberg_author_id 	| count 	|
+|--------------------	|--------------------------------------	|-----------------	|------------------	|---------------------	|-------	|
+| 1232               	| The Prince                           	| Machiavelli     	| Niccolò          	| 563                 	| 1     	|
+| 3207               	| Leviathan                            	| Hobbes          	| Thomas           	| 1133                	| 2     	|
+| 7370               	| Second Treatise of Government        	| Locke           	| John             	| 2447                	| 3     	|
+| 46333              	| The Social Contract &amp; Discourses 	| Rousseau        	| Jean-Jacques     	| 1286                	| 4     	|
+
+Ou seja, 
+
+- **O Príncipe**, de Nicolau Maquiavel; 
+
+- **Leviatã**, de Thomas Hobbes; 
+
+- **Segundo Tratado sobre o Governo** de John Locke; e 
+
+- **Do Contrato Social e Discursos** de Jean-Jacques Rousseau.
+
+```{r}
+books <- gutenberg_download(c(1232, 
+                              3207, 
+                              7370, 
+                              46333), meta_fields = c("title", "author"))
+table(books$title)
+```
+
+O princípio orientador da seleção realizada das obras é um princípio de adequação teóricamente orientado e de cunho marcadamente exploratório, baseado no livro de WEFFORT, um livro amplamente adotado como livro-texto em cursos elementares de Pensamento Político, Filosofia Política Clássica, ou Ciência Política. De modo específico, demais constatações e referências serão tomadas dessa mesma obra.
+
+WEFFORT, Francisco Correa. **Os Clássicos da política: Maquiavel, Hobbes, Locke, Montesquieu, Rousseau, "o federalista".** Editora Ática, 2011.
