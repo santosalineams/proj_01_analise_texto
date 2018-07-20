@@ -95,7 +95,14 @@ total_words <- books_words %>%
 
 total_words
 ```
+**Quadro 02 - Contagem de Palavras por Livro**
 
+|  title                               	| count 	|
+|-------------------------------------	|--------	|
+| The Prince                           	| 214029	|
+| Leviathan                            	|  56562 	|
+| Second Treatise of Government        	|  49643	|
+| The Social Contract &amp; Discourses 	| 123872 	|
 **Frequência de termos por livro**
 Explorar a quantidade de termos mesmo com stopwords
 
