@@ -108,18 +108,18 @@ head(books_words, 10)
 ```
 
 **Histograma das frequências de palavras por livro**
-
+**Sem remoção de stop-words**
 ```{r}
 ggplot(books_words, 
        aes(n/total, fill = title)) + 
        geom_histogram(show.legend = FALSE) + 
-       xlim(NA, 0.0009) + 
+       xlim(NA, 0.003) + 
        facet_wrap(~title, ncol = 2, scales = "free_y")
 ```
 
 **Remover Stop-Words**
-**Frequência maior ou igual a 500 para todas os títulos**
-
+**Frequência maior ou igual a 500 para todos os títulos**
+**Análise Global**
 ```{r}
 data("stop_words")
 
@@ -131,8 +131,79 @@ tidy_books %>%
   count(word, sort = TRUE) %>% 
   filter(n >= 500) %>% 
   mutate(word = reorder(word, n)) %>% 
-  ggplot(aes(word, n)) + 
-  geom_col() + 
-  xlab(NULL) + 
-  coord_flip()
+  ggplot(aes(word, 
+             n)) + 
+         geom_col() + 
+         xlab(NULL) + 
+         coord_flip()
+```
+
+
+```{r}
+data("stop_words")
+
+tidy_books <- books %>% 
+  unnest_tokens(word, text)
+
+#quem mais aparece por livro documento - termo
+words_books <- books %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(stop_words) %>% 
+  count(title, word, sort = TRUE) %>% 
+  ungroup()
+
+words_books
+
+#contando palavras por livro
+total_words <- words_books %>% 
+  group_by(title) %>% 
+  summarize(total = sum(n))
+
+total_words
+
+#para tirar a frequência de termos por livro
+words_books_bb <- left_join(words_books, total_words)
+
+#histograma das frequências de palavras por livro
+ggplot(words_books_bb, aes(n/total, fill = title)) + 
+  geom_histogram(show.legend = FALSE) + 
+  xlim(NA, 0.003) + 
+  facet_wrap(~title, ncol = 2, scales = "free_y")
+```
+
+
+```{r}
+#frequência relativa de palavras num único livro
+book_filter1 <- words_books_bb %>% 
+  filter(title=="The Prince")
+book_filter2 <- words_books_bb %>% 
+  filter(title=="Leviathan")
+book_filter3 <- words_books_bb %>% 
+  filter(title=="Second Treatise of Government")
+book_filter4 <- words_books_bb %>% 
+  filter(title=="The Social Contract & Discourses")
+
+#frequência relativa de palavras do livro 1 "The Prince"
+ggplot(book_filter1, aes(n/total)) + 
+  geom_histogram(show.legend = TRUE) + 
+  xlim(NA, 0.003) + 
+  facet_wrap(~title, ncol = 2, scales = "free_y")
+
+#frequência relativa de palavras do livro 2 "Leviathan"
+ggplot(book_filter2, aes(n/total)) + 
+  geom_histogram(show.legend = TRUE) + 
+  xlim(NA, 0.003) + 
+  facet_wrap(~title, ncol = 2, scales = "free_y")
+
+#frequência relativa de palavras do livro 3 "Second Treatise of Government"
+ggplot(book_filter3, aes(n/total)) + 
+  geom_histogram(show.legend = TRUE) + 
+  xlim(NA, 0.003) + 
+  facet_wrap(~title, ncol = 2, scales = "free_y")
+
+#frequência relativa de palavras do livro 4 "The Social Contract & Discourses"
+ggplot(book_filter4, aes(n/total)) + 
+  geom_histogram(show.legend = TRUE) + 
+  xlim(NA, 0.003) + 
+  facet_wrap(~title, ncol = 2, scales = "free_y")
 ```
